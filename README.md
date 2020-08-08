@@ -21,7 +21,7 @@
 
 Запускается это все в файле main.py
 
-Для запуска же всего несколько раз в день использовал crontab
+Для регулярного запуска всего этого безобразия  использовал crontab
 получилось больно. а результат вот такой:
 0 1,13 * * * env -i bash -c 'export WORKON_HOME=~/.virtualenvs && source ~/.virtualenvs/demokefir/bin/activate && cd  ~/dev/demokefir_simple/ && ~/.virtualenvs/demokefir/bin/python3 ~/dev/demokefir_simple/main.py' >> log.txt 2>&1
 

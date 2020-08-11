@@ -28,10 +28,10 @@ def connect():
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
-		
+
         # create a cursor
         cur = conn.cursor()
-        
+
 	# execute a statement
         print('PostgreSQL database version:')
         cur.execute('SELECT version()')
@@ -39,7 +39,7 @@ def connect():
         # display the PostgreSQL database server version
         db_version = cur.fetchone()
         print(db_version)
-       
+
 	# close the communication with the PostgreSQL
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -82,7 +82,7 @@ def create_table():
         if conn is not None:
             conn.close()
 
-def insert_post_list(post_list):
+def insert_post(post_list):
     sql = "INSERT INTO posts(post_url,post_status,post_title,post_text,post_time) VALUES(%s,%s,%s,%s,%s)"
     conn = None
     try:
@@ -93,7 +93,7 @@ def insert_post_list(post_list):
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-        cur.executemany(sql,post_list)
+        cur.executemany(sql, (post_list,))
         # commit the changes to the database
         conn.commit()
         # close communication with the database
@@ -103,4 +103,3 @@ def insert_post_list(post_list):
     finally:
         if conn is not None:
             conn.close()
-

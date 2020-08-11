@@ -2,17 +2,19 @@ import random
 import asyncio
 from aiohttp import ClientSession
 from parsing import parse_document
-
+from db_stuff import insert_post
 async def fetch(url, session):
     async with session.get(url) as response:
-        
-        return parse_document(await response.text(), url)
+
+        post = parse_document(await response.text(), url)
+        post_list = list(post.get(i,"Nope") for i in ['url','status','title','text','time'])
+        insert_post(post_list)
 
 
 async def bound_fetch(sem, url, session):
     # Getter function with semaphore.
     async with sem:
-        return await fetch(url, session)
+        await fetch(url, session)
 
 
 async def run(links):
@@ -30,11 +32,10 @@ async def run(links):
             tasks.append(task)
 
         responses = asyncio.gather(*tasks)
-        return await responses
+        await responses
 
-def get_requests(links):
+def get_and_save_requests(links):
     loop = asyncio.get_event_loop()
 
     future = asyncio.ensure_future(run(links))
     loop.run_until_complete(future)
-    return future.result()

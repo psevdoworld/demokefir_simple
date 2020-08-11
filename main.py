@@ -1,9 +1,8 @@
 from utils import get_links
-from aiohttp_stuff import get_requests
-from db_stuff import insert_post_list
+from aiohttp_stuff import get_and_save_requests
 
 links = get_links() #получаем ссылки из json
-requests = get_requests(links) # в результате асинхронной магии с щепоткой bs4 получаем данные страниц
-posts_list = [list(post.get(i,"Nope") for i in ['url','status','title','text','time'])for post in  requests] # небольшая конвертация в неловкий список для бд
-# был плавающий баг, но я не уверен что он ушел. Иногда данные одних и тех же страниц не получаются
-insert_post_list(posts_list) # бд завершает начатое
+get_and_save_requests(links)  # в результате асинхронной магии с щепоткой bs4 получаем данные страниц
+# перенес вызов сохранения в бд в функцию получения и сохраняю каждую запись сразу же
+# почему-то очень сомнительным кажется такой подход, но хотелось бы услышать фидбек об адекватности такого решения
+# мне кажется что чересчур много функционала в том глубоком месте в функции fetch
